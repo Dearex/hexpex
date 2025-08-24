@@ -195,17 +195,16 @@ class _Hex(ABC):
         if angle % 60 != 0:
             raise ValueError("argument of 'angle' must be in 60 degree increments.")
 
-        rotated = set()
+        rotated = list()
+        # Negative angles return the step count for clockwise rotation so no differntiation needed 
         steps = abs((angle % 360) // 60)
 
         for hex in hexes:
             vector = hex - self
-            if angle > 0:
-                *_, vector = (hex._rotate_clockwise() for _ in range(steps))
-            elif angle < 0:
-                *_, vector = (hex._rotate_counterclockwise() for _ in range(steps))
-            rotated.add(self + vector)
-        return rotated
+            for _ in range(steps):
+                vector = vector._rotate_clockwise()
+            rotated.append(self + vector)
+        return tuple(rotated)
 
     def to_tuple(self) -> tuple[int, ...]:
         """Convert self to tuple representation."""
